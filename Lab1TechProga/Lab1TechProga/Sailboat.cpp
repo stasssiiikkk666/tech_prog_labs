@@ -21,6 +21,8 @@ Sailboat::~Sailboat()
 
 void Sailboat::SetType(string type) {
 	if (type == "") throw Exceptions{ "Please, enter type of Sailboat." };
+	if (type != "Sloop" && type != "Schooner" && type != "Brig" && type != "Barque" && type != "Racing yacht") throw
+		Exceptions{ "Type of the Sailboat must be one of Sloop/Schooner/Brig/Barque/Racing yacht" };
 	this->type = type;
 
 }
@@ -50,13 +52,14 @@ double Sailboat::GetLength() const { return length; }
 
 void Sailboat::CreateObject()
 {
+	string param;
 	bool success = false;
 	do {
-		string type;
-		cout << "\nEnter new type: ";
-		cin.ignore();
-		getline(cin, type);
-		try { SetType(type); success = true; }
+		try { 
+			cout << "\nEnter new type: ";
+			getline(cin, type);
+			SetType(type);
+			success = true; }
 		catch (const Exceptions& ex) {
 			cout << ex.GetMessage() << endl;
 		}
@@ -64,77 +67,66 @@ void Sailboat::CreateObject()
 
 	do {
 		success = false;
-		string name;
-		cout << "\nEnter new Name: ";
-		getline(cin, name);
-		try { SetName(name); success = true; }
-		catch (const Exceptions& ex) {
-			cout << ex.GetMessage() << endl;
-		}
-	} while (success == false);
-	
-	do {
-		success = false;
-		string status;
-		cout << "\nEnter new Status: ";
-		getline(cin, status);
-		try { SetStatus(status); success = true; }
-		catch (const Exceptions& ex) {
-			cout << ex.GetMessage() << endl;
-		}
-	} while (success == false);
-	
-	do {
-		success = false;
-		double length;
-		cout << "\nEnter new Length: ";
-		cin >> length;
 		try { 
-			ValidData(cin.fail());
-			SetLength(length); 
-			success = true; 
-		}
-		catch (const Exceptions& ex) {
-			cout << ex.GetMessage() << endl;
-			std::cin.clear();
-			std::cin.ignore(1000, '\n');
-			cin.get();
-		}
-	} while (success == false);
-	
-	do {
-		success = false;
-		double speed;
-		cout << "\nEnter new Speed: ";
-		cin >> speed;
-		try { 
-			ValidData(cin.fail());
-			SetSpeed(speed);
-			success = true; 
-		}
-		catch (const Exceptions& ex) {
-			cout << ex.GetMessage() << endl;
-			std::cin.clear();
-			std::cin.ignore(1000, '\n');
-			cin.get();
-		}
-	} while (success == false);
-	
-	do {
-		success = false;
-		int amount;
-		cout << "\nEnter new Amount of crew: " << endl;
-		cin >> amount;
-		
-		try {
-			ValidData(cin.fail());
-			SetAmountCrew(amount); 
+			cout << "\nEnter new Name: ";
+			getline(cin, name);
+			SetName(name); 
 			success = true; }
 		catch (const Exceptions& ex) {
 			cout << ex.GetMessage() << endl;
-			std::cin.clear();
-			std::cin.ignore(1000, '\n');
-			cin.get();
+		}
+	} while (success == false);
+	
+	do {
+		success = false;
+		try {
+			cout << "\nEnter new Status: ";
+			getline(cin, status);
+			SetStatus(status); 
+			success = true; }
+		catch (const Exceptions& ex) {
+			cout << ex.GetMessage() << endl;
+		}
+	} while (success == false);
+	
+	do {
+		success = false;
+		cout << "\nEnter new Length: ";
+		getline(cin, param);
+		try { 
+			ValidData(param);
+			SetLength(stod(param)); 
+			success = true; 
+		}
+		catch (const Exceptions& ex) {
+			cout << ex.GetMessage() << endl;
+		}
+	} while (success == false);
+	
+	do {
+		success = false;
+		cout << "\nEnter new Speed: ";
+		getline(cin, param);
+		try { 
+			ValidData(param);
+			SetSpeed(stod(param));
+			success = true; 
+		}
+		catch (const Exceptions& ex) {
+			cout << ex.GetMessage() << endl;
+		}
+	} while (success == false);
+	
+	do {
+		success = false;
+		cout << "\nEnter new Amount of crew: ";
+		getline(cin, param);
+		try {
+			ValidIntData(param);
+			SetAmountCrew(stoi(param)); 
+			success = true; }
+		catch (const Exceptions& ex) {
+			cout << ex.GetMessage() << endl;
 		}
 	} while (success == false);
 	
@@ -153,57 +145,109 @@ void Sailboat::PrintInfo() const
 
 void Sailboat::EditInfo()
 {
-	int choice;
-	double editParam1;
-	string editParam2;
-	int amount;
+	string choice;
+	string editParam;
+	system("cls");
+	cout << "--- Edit Menu ---" << endl;
 	cout << "[1] Edit Type" << endl;
 	cout << "[2] Edit Name" << endl;
 	cout << "[3] Edit Status" << endl;
 	cout << "[4] Edit Length" << endl;
 	cout << "[5] Edit Speed" << endl;
 	cout << "[6] Edit Amount of crew" << endl;
-	cout << "\nEnter your choice: " << endl;
-	cin >> choice;
-	switch (choice) {
-	case 1: 
-		cout << "Enter new type: ";
-		getline(cin, editParam2);
-		SetType(editParam2);
-		break;
-	case 2:
-		cout << "Enter new Name: ";
-		getline(cin, editParam2);
-		SetName(editParam2);
-		break;
-	case 3:
-		cout << "Enter new Status: ";
-		getline(cin, editParam2);
-		SetStatus(editParam2);
-		break;
-	case 4:
-		cout << "Enter new Length: ";
-		cin >> editParam1;
-		SetLength(editParam1);
-		break;
-	case 5:
-		cout << "Enter new Speed: ";
-		cin >> editParam1;
-		SetSpeed(editParam1);
-		break;
-	case 6:
-		cout << "Enter new Amount of crew: " << endl;
-		cin >> amount;
-		SetAmountCrew(amount);
-		break;
-	}
+	cout << "[7] Print current object" << endl;
+	cout << "[0] Back" << endl;
+	cout << "\nEnter your choice: ";
+	getline(std::cin, choice);
+	std::cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+	
+	try {
+		do {
+			ValidIntData(choice);
+			switch (stoi(choice)) {
 
+			case 1:
+				cout << "Enter new Type: ";
+				getline(std::cin, editParam);
+				try {
+					SetType(editParam);
+					cout << "Parameter was successfully edited." << endl;
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 2:
+				cout << "Enter new Name: ";
+				getline(std::cin, editParam);
+				try {
+					SetName(editParam);
+					cout << "Parameter was successfully edited." << endl;
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 3:
+				cout << "Enter new Status: ";
+				getline(std::cin, editParam);
+				try {
+					SetStatus(editParam);
+					cout << "Parameter was successfully edited." << endl;
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 4:
+				cout << "Enter new Length: ";
+				getline(std::cin, editParam);
+				try {
+					ValidData(editParam);
+					SetLength(stod(editParam));
+					cout << "Parameter was successfully edited." << endl;
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 5:
+				cout << "Enter new Speed: ";
+				getline(std::cin, editParam);
+				try {
+					ValidData(editParam);
+					SetSpeed(stod(editParam));
+					cout << "Parameter was successfully edited." << endl;
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 6:
+				cout << "Enter new Amount of crew: ";
+				getline(std::cin, editParam);
+				try {
+					ValidIntData(editParam);
+					SetAmountCrew(stoi(editParam));
+					cout << "Parameter was successfully edited." << endl;
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 7:
+				this->PrintInfo();
+				break;
+			default:
+				cout << "Invalid input! Please, enter 1/2/3/4/5/6/7/8 (0 - exit) number.";
+				break;
+			}
+			std::cin.ignore();
+			std::cin.get();
+		} while (stoi(choice) != 0);
+	} 
+	catch (const Exceptions& ex) { cout << ex.GetMessage() << endl; }
 }
-
-//void Sailboat::DeleteObject()
-//{
-//	delete this;
-//}
 
 
 

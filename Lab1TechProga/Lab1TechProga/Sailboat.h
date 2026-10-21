@@ -11,7 +11,8 @@ private:
 	string status; //мирный или военный
 	double length;
 public:
-	Sailboat(double speed, int amount, string type, string name, string status, double length) : Base(speed, amount) {
+	Sailboat(double speed, int amount, string type, string name, string status, double length) : 
+		Base(speed, amount) {
 		SetType(type);
 		SetName(name);
 		SetStatus(status);
