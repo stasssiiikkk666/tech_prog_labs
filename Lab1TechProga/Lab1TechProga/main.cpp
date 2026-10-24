@@ -7,103 +7,146 @@
 #include "Submarine.h"
 #include "Keeper.h"
 #include "Exceptions.h"
+#include "Base.h"
 using namespace std;
 
 void ClearScreen();
 void AddShip(int choice);
-void ValidData(const string& id);
+void ValidData(const string& param);
 void ValidData();
 Keeper keeper;
-//unsigned int ID = 0;
 
 int main() {
-	setlocale(LC_ALL, "RU");
-	int choice = 0;
-	//int id = 0;
+	string choice;
 	string id;
+	std::ofstream out("lab1.txt", ios::app);
 
 	do {
-		ClearScreen();
-		cout << "--- MAIN MENU ---\n";
-		cout << "[1] Add" << endl;
-		cout << "[2] Delete" << endl;
-		cout << "[3] Print all" << endl;
-		cout << "[4] Search" << endl;
-		cout << "[5] Edit Ship" << endl;
-		cout << "Enter your choice: ";
-		std::cin >> choice;
-		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
-		switch (choice) {
-		case 1:
+		try {
 			ClearScreen();
-			int choice;
-			cout << "--- Choose what kind of ship you want to ADD ---\n";
-			cout << "[1] Sailboat" << endl;
-			cout << "[2] Speedboat" << endl;
-			cout << "[3] Submarine" << endl;
-			cout << "[0] Back" << endl;
+			cout << "--- MAIN MENU ---\n";
+			cout << "[1] Add" << endl;
+			cout << "[2] Delete" << endl;
+			cout << "[3] Print all" << endl;
+			cout << "[4] Search" << endl;
+			cout << "[5] Edit Ship" << endl;
+			cout << "[6] Save all" << endl;
+			cout << "[7] Save object" << endl;
+			cout << "[8] Restore from file" << endl;
+			cout << "[0] Exit" << endl;
 			cout << "Enter your choice: ";
-			cin >> choice;
-			AddShip(choice);
-			break;
-		case 2:
-			try {
-				ValidData();
-				cout << "Enter ID of the ship: ";
-				getline(cin, id);
-				ValidData(id);
-				keeper.DeleteObject(stoi(id));
-			}
-			catch (const Exceptions& ex) {
-				cout << ex.GetMessage() << endl;
-			}
-			break;
-		case 3:
-			try {
-				ValidData();
-				keeper.PrintAll();
-			}
-			catch (const Exceptions& ex) {
-				cout << ex.GetMessage() << endl;
-			}
-			break;
-		case 4:
-			try {
-				ValidData();
-				cout << "Enter ID of the ship: ";
-				cin >> id;
-				ValidData(id);
-				Base* obj = keeper.SearchObject(stoi(id));
-				obj->PrintInfo();
+			getline(std::cin, choice);
+			//cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
 
-			}
-			catch (const Exceptions& ex) {
-				cout << ex.GetMessage() << endl;
-			}
-			break;
-		case 5:
-			try {
-				ValidData();
-				cout << "Enter ID of the ship: ";
-				cin >> id;
-				ValidData(id);
-				Base* obj = keeper.SearchObject(stoi(id));
+			ValidData(choice);
+			switch (stoi(choice)) {
+			case 1: {
+				string choice;
 				ClearScreen();
-				obj->EditInfo();
+				cout << "--- Choose what kind of ship you want to ADD ---\n";
+				cout << "[1] Sailboat" << endl;
+				cout << "[2] Speedboat" << endl;
+				cout << "[3] Submarine" << endl;
+				cout << "[0] Back" << endl;
+				cout << "Enter your choice: ";
+				getline(cin, choice);
+				try {
+					ValidData(choice);
+					AddShip(stoi(choice));
+				}
+				catch (const Exceptions& ex) { cout << ex.GetMessage() << endl; }
+				break;
 			}
-			catch (const Exceptions& ex) {
-				cout << ex.GetMessage() << endl;
+			case 2:
+				try {
+					ValidData();
+					cout << "Enter ID of the ship: ";
+					getline(cin, id);
+					ValidData(id);
+					keeper.DeleteObject(stoi(id));
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 3:
+				try {
+					ValidData();
+					keeper.PrintAll();
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 4:
+				try {
+					ValidData();
+					cout << "Enter ID of the ship: ";
+					getline(cin, id);
+					ValidData(id);
+					Base* obj = keeper.SearchObject(stoi(id));
+					obj->PrintInfo();
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 5:
+				try {
+					ValidData();
+					cout << "Enter ID of the ship: ";
+					getline(cin, id);
+					ValidData(id);
+					Base* obj = keeper.SearchObject(stoi(id));
+					ClearScreen();
+					obj->EditInfo();
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 6:
+				try {
+					ValidData();
+					keeper.Save();
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 7:
+				try {
+					ValidData();
+					cout << "Enter ID of the ship: ";
+					getline(cin, id);
+					ValidData(id);
+					keeper.SaveObject(stoi(id));
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+				}
+				break;
+			case 8:
+				try {
+					keeper.Restoring();
+				}
+				catch (const Exceptions& ex) {
+					cout << ex.GetMessage() << endl;
+					//keeper.~Keeper();
+				}
+				break;
+			case 0:
+				break;
+			default:
+				cout << "Invalid input! Please, enter 1/2/3/4/5/6/7/8 (0 - exit) number.";
+				break;
 			}
-			break;
-		
-		case 0: return 0;
-		default:
-			cout << "Invalid input! Please, enter 1/2/3/4/5 (0 - exit) number.";
-			break;
+			cin.ignore();
 		}
-		cin.ignore();
-		cin.get();
-	} while (choice != 0);
+		catch (const Exceptions& ex) {
+			cout << ex.GetMessage() << std::endl; cin.get();
+		}
+	} while (choice != "0");
 }
 
 void ClearScreen() { system("cls"); }
@@ -114,28 +157,33 @@ void AddShip(int choice)
 	switch (choice) {
 	case 1:
 		obj = new Sailboat();
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		obj->CreateObject();
 		keeper.AddObject(obj);
 		cout << "New Sailboat succesfully was created!";
 		break;
 	case 2:
-		break;
-		//Speedboat speedboat1;
+		obj = new Speedboat();
+		obj->CreateObject();
+		keeper.AddObject(obj);
+		cout << "New Speedboat succesfully was created!";
+		break; 
 	case 3:
+		obj = new Submarine();
+		obj->CreateObject();
+		keeper.AddObject(obj);
+		cout << "New Sailboat succesfully was created!";
 		break;
-		//Submarine submarine1;
+	case 0: break;
 	default:
 		cout << "Invalid input! Please, enter 1/2/3 number.";
 	}
-
 }
 
 
-void ValidData(const std::string& id)
+void ValidData(const std::string& param)
 {
 	int idInt;
-	std::istringstream iss(id);
+	std::istringstream iss(param);
 	if (!(iss >> idInt)) throw Exceptions{ "Invalid input data type!" };
 	iss >> std::ws; //пропуск пробелов ПОСЛЕ числа
 	if (!iss.eof()) throw Exceptions{ "Invalid input data type!" };
@@ -143,6 +191,5 @@ void ValidData(const std::string& id)
 
 void ValidData()
 {
-	if (keeper.GetSize() == 0) throw Exceptions{ "Before delete/edit/print/search add Ship" };
+	if (keeper.GetSize() == 0) throw Exceptions{ "Before delete/edit/print/search/save add Ship or restore" };
 }
-
