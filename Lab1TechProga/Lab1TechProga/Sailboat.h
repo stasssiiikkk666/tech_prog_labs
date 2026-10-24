@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <sstream>
 #include "Base.h"
 using namespace std;
 
@@ -33,8 +34,9 @@ public:
 	double GetLength() const;
 
 	void CreateObject() override;
+	void RestoreObject(std::istringstream& ss) override;
 	void PrintInfo() const override;
 	void EditInfo() override;
-	//void DeleteObject() override;
 
+	std::ofstream& Save(std::ofstream& out) const override;
 };

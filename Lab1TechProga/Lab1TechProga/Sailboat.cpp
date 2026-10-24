@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 #include "Sailboat.h"
 #include "Exceptions.h"
 using namespace std;
@@ -24,7 +25,6 @@ void Sailboat::SetType(string type) {
 	if (type != "Sloop" && type != "Schooner" && type != "Brig" && type != "Barque" && type != "Racing yacht") throw
 		Exceptions{ "Type of the Sailboat must be one of Sloop/Schooner/Brig/Barque/Racing yacht" };
 	this->type = type;
-
 }
 
 void Sailboat::SetName(string name) { 
@@ -35,12 +35,12 @@ void Sailboat::SetName(string name) {
 
 void Sailboat::SetStatus(string status) {
 	if ((status != "civilian" && status != "military") || status == "")
-		throw Exceptions{ "Please, enter status (civilian/military) of Sailboat." };
+		throw Exceptions{ "Please, enter Status (civilian/military) of Sailboat." };
 	this->status = status;
 }
 
 void Sailboat::SetLength(double length){
-	if (length < 0) throw Exceptions{ "Please, enter length >=0 of Sailboat." };
+	if (length < 0) throw Exceptions{ "Please, enter Length >=0 of Sailboat." };
 	this->length = length;
 }
 
@@ -58,7 +58,7 @@ void Sailboat::CreateObject()
 		try { 
 			cout << "\nEnter new type: ";
 			getline(cin, type);
-			SetType(type);
+			SetType(DeleteSpaces(type));
 			success = true; }
 		catch (const Exceptions& ex) {
 			cout << ex.GetMessage() << endl;
@@ -70,7 +70,7 @@ void Sailboat::CreateObject()
 		try { 
 			cout << "\nEnter new Name: ";
 			getline(cin, name);
-			SetName(name); 
+			SetName(DeleteSpaces(name)); 
 			success = true; }
 		catch (const Exceptions& ex) {
 			cout << ex.GetMessage() << endl;
@@ -81,8 +81,8 @@ void Sailboat::CreateObject()
 		success = false;
 		try {
 			cout << "\nEnter new Status: ";
-			getline(cin, status);
-			SetStatus(status); 
+			getline(cin, param);
+			SetStatus(DeleteSpaces(param)); 
 			success = true; }
 		catch (const Exceptions& ex) {
 			cout << ex.GetMessage() << endl;
@@ -132,8 +132,31 @@ void Sailboat::CreateObject()
 	
 }
 
+void Sailboat::RestoreObject(std::istringstream& ss)
+{
+	std::string element;
+	getline(ss, element, ',');
+	this->SetID(element);
+	getline(ss, element, ',');
+	this->SetType(element);
+	getline(ss, element, ',');
+	this->SetName(element);
+	getline(ss, element, ',');
+	this->SetStatus(element);
+	getline(ss, element, ',');
+	ValidData(element);
+	this->SetLength(stod(element));
+	getline(ss, element, ',');
+	ValidData(element);
+	this->SetSpeed(stod(element));
+	getline(ss, element, ',');
+	ValidIntData(element);
+	this->SetAmountCrew(stoi(element));
+}
+
 void Sailboat::PrintInfo() const
 {
+	std::cout << "\n-------- Sailboat --------" << endl;
 	cout << "ID: " << this->GetID() << endl;
 	cout << "Type: " << this->GetType() << endl;
 	cout << "Name: " << this->GetName() << endl;
@@ -146,23 +169,21 @@ void Sailboat::PrintInfo() const
 void Sailboat::EditInfo()
 {
 	string choice;
-	string editParam;
-	system("cls");
-	cout << "--- Edit Menu ---" << endl;
-	cout << "[1] Edit Type" << endl;
-	cout << "[2] Edit Name" << endl;
-	cout << "[3] Edit Status" << endl;
-	cout << "[4] Edit Length" << endl;
-	cout << "[5] Edit Speed" << endl;
-	cout << "[6] Edit Amount of crew" << endl;
-	cout << "[7] Print current object" << endl;
-	cout << "[0] Back" << endl;
-	cout << "\nEnter your choice: ";
-	getline(std::cin, choice);
-	std::cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
-	
-	try {
-		do {
+	string editParam;	
+	do {
+		try {
+			system("cls");
+			cout << "--- Edit Menu ---" << endl;
+			cout << "[1] Edit Type" << endl;
+			cout << "[2] Edit Name" << endl;
+			cout << "[3] Edit Status" << endl;
+			cout << "[4] Edit Length" << endl;
+			cout << "[5] Edit Speed" << endl;
+			cout << "[6] Edit Amount of crew" << endl;
+			cout << "[7] Print current object" << endl;
+			cout << "[0] Back" << endl;
+			cout << "\nEnter your choice: ";
+			getline(std::cin, choice);
 			ValidIntData(choice);
 			switch (stoi(choice)) {
 
@@ -170,7 +191,7 @@ void Sailboat::EditInfo()
 				cout << "Enter new Type: ";
 				getline(std::cin, editParam);
 				try {
-					SetType(editParam);
+					SetType(DeleteSpaces(editParam));
 					cout << "Parameter was successfully edited." << endl;
 				}
 				catch (const Exceptions& ex) {
@@ -181,7 +202,7 @@ void Sailboat::EditInfo()
 				cout << "Enter new Name: ";
 				getline(std::cin, editParam);
 				try {
-					SetName(editParam);
+					SetName(DeleteSpaces(editParam));
 					cout << "Parameter was successfully edited." << endl;
 				}
 				catch (const Exceptions& ex) {
@@ -192,7 +213,7 @@ void Sailboat::EditInfo()
 				cout << "Enter new Status: ";
 				getline(std::cin, editParam);
 				try {
-					SetStatus(editParam);
+					SetStatus(DeleteSpaces(editParam));
 					cout << "Parameter was successfully edited." << endl;
 				}
 				catch (const Exceptions& ex) {
@@ -238,15 +259,22 @@ void Sailboat::EditInfo()
 			case 7:
 				this->PrintInfo();
 				break;
+			case 0: break;
 			default:
-				cout << "Invalid input! Please, enter 1/2/3/4/5/6/7/8 (0 - exit) number.";
+				cout << "Invalid input! Please, enter 1/2/3/4/5/6/7 (0 - exit) number.";
 				break;
 			}
-			std::cin.ignore();
-			std::cin.get();
-		} while (stoi(choice) != 0);
-	} 
-	catch (const Exceptions& ex) { cout << ex.GetMessage() << endl; }
+		} 
+		catch (const Exceptions& ex) { cout << ex.GetMessage() << endl; }
+		std::cin.ignore();
+	} while (choice != "0");
+}
+
+std::ofstream& Sailboat::Save(std::ofstream& out) const
+{
+	out << "Sailboat" << "," << this->GetID() << "," << this->GetType() << "," << this->GetName() << "," <<
+		this->GetStatus() << "," << this->GetLength() << "," << this->GetSpeed() << "," << this->GetAmountCrew();
+	return out;
 }
 
 
