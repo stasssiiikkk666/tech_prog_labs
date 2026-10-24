@@ -111,6 +111,25 @@ void Speedboat::CreateObject()
 	} while (success == false);
 }
 
+void Speedboat::RestoreObject(std::istringstream& ss)
+{
+	std::string element;
+	getline(ss, element, ',');
+	this->SetID(element);
+	getline(ss, element, ',');
+	this->SetPurpose(element);
+	getline(ss, element, ',');
+	this->SetMaterial(element);
+	getline(ss, element, ',');
+	this->SetCharachteristics(element);
+	getline(ss, element, ',');
+	ValidData(element);
+	this->SetSpeed(stod(element));
+	getline(ss, element, ',');
+	ValidIntData(element);
+	this->SetAmountCrew(stoi(element));
+}
+
 void Speedboat::PrintInfo() const{
 	std::cout << "\n-------- Speedboat --------" << endl;
 	std::cout << "ID: " << this->GetID() << endl;
@@ -201,6 +220,7 @@ void Speedboat::EditInfo()
 			case 6:
 				this->PrintInfo();
 				break;
+			case 0: break;
 			default:
 				cout << "Invalid input! Please, enter 1/2/3/4/5/6 (0 - exit) number.";
 				break;
@@ -210,6 +230,13 @@ void Speedboat::EditInfo()
 		catch (const Exceptions& ex) { cout << ex.GetMessage() << endl; }
 		std::cin.ignore();
 	} while (choice != "0");
+}
+
+std::ofstream& Speedboat::Save(std::ofstream& out) const
+{
+	out << "Speedboat" << "," << this->GetID() << "," << this->GetPurpose() << "," << this->GetMaterial() << "," <<
+		this->GetCharachteristics() << "," << this->GetSpeed() << "," << this->GetAmountCrew();
+	return out;
 }
 
 
