@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <sstream>
 #include "Base.h"
 
 class Submarine : public Base {
@@ -31,6 +33,9 @@ public:
 	std::string GetArmament() const;
 
 	void CreateObject() override;
+	void RestoreObject(std::istringstream& ss) override;
 	void PrintInfo() const override;
 	void EditInfo() override;
+
+	std::ofstream& Save(std::ofstream& out) const override;
 };

@@ -32,10 +32,10 @@ void Submarine::SetTimeUnderWater(int timeUnderWater) {
 }
 
 void Submarine::SetArmament(string armament) {
-	if (armament == "") throw Exceptions{ "Please, enter type of the armament Sailboat." };
+	if (armament == "") throw Exceptions{ "Please, enter type of the Armament Sailboat." };
 	if (armament != "Torpedoes" && armament != "Missiles" && armament != "Mixed" && armament != "Mines"
 		&& armament != "None") throw Exceptions{ 
-			"Type of the Submarine's armament must be one of Torpedoes/Missiles/Mixed/Mines/None" };
+			"The Submarine's Armament must be one of Torpedoes/Missiles/Mixed/Mines/None" };
 	this->armament = armament;
 }
 
@@ -78,9 +78,9 @@ void Submarine::CreateObject()
 	do {
 		success = false;
 		cout << "\nEnter new Armament: ";
-		getline(cin, armament);
+		getline(cin, param);
 		try {
-			SetArmament(DeleteSpaces(armament));
+			SetArmament(DeleteSpaces(param));
 			success = true;
 		}
 		catch (const Exceptions& ex) {
@@ -131,11 +131,33 @@ void Submarine::CreateObject()
 	} while (success == false);
 }
 
+void Submarine::RestoreObject(std::istringstream& ss)
+{
+	std::string element;
+	getline(ss, element, ',');
+	this->SetID(element);
+	getline(ss, element, ',');
+	this->SetLength(stod(element));
+	getline(ss, element, ',');
+	this->SetWidth(stod(element));
+	getline(ss, element, ',');
+	this->SetArmament(element);
+	getline(ss, element, ',');
+	ValidIntData(element);
+	this->SetTimeUnderWater(stoi(element));
+	getline(ss, element, ',');
+	ValidData(element);
+	this->SetSpeed(stod(element));
+	getline(ss, element, ',');
+	ValidIntData(element);
+	this->SetAmountCrew(stoi(element));
+}
+
 void Submarine::PrintInfo() const
 {
 	std::cout << "\n-------- Submarine --------" << endl;
 	std::cout << "ID: " << this->GetID() << endl;
-	std::cout << "Length:" << this->GetLength() << endl;
+	std::cout << "Length: " << this->GetLength() << endl;
 	std::cout << "Width: " << this->GetWidth() << endl;
 	std::cout << "Armament: " << this->GetArmament() << endl;
 	std::cout << "Time under water: " << this->GetTimeUnderWater() << endl;
@@ -147,104 +169,113 @@ void Submarine::EditInfo()
 {
 	string choice;
 	string editParam;
-	try {
-		do {
-			system("cls");
-			cout << "--- Edit Menu ---" << endl;
-			cout << "[1] Edit Length" << endl;
-			cout << "[2] Edit Width" << endl;
-			cout << "[3] Edit Armament" << endl;
-			cout << "[4] Edit Time under water" << endl;
-			cout << "[5] Edit Speed" << endl;
-			cout << "[6] Edit Amount of crew" << endl;
-			cout << "[7] Print current object" << endl;
-			cout << "[0] Back" << endl;
-			cout << "\nEnter your choice: ";
-			getline(std::cin, choice);
-			ValidIntData(choice);
-			switch (stoi(choice)) {
+	do {
+		try {
+		system("cls");
+		cout << "--- Edit Menu ---" << endl;
+		cout << "[1] Edit Length" << endl;
+		cout << "[2] Edit Width" << endl;
+		cout << "[3] Edit Armament" << endl;
+		cout << "[4] Edit Time under water" << endl;
+		cout << "[5] Edit Speed" << endl;
+		cout << "[6] Edit Amount of crew" << endl;
+		cout << "[7] Print current object" << endl;
+		cout << "[0] Back" << endl;
+		cout << "\nEnter your choice: ";
+		getline(std::cin, choice);
+		ValidIntData(choice);
+		switch (stoi(choice)) {
 
-			case 1:
-				std::cout << "\nEnter new Length: ";
-				getline(std::cin, editParam);
-				ValidData(editParam);
-				try {
-					SetLength(stod(editParam));
-					cout << "Parameter was successfully edited." << endl;
-				}
-				catch (const Exceptions& ex) {
-					cout << ex.GetMessage() << endl;
-				}
-				break;
-			case 2:
-				std::cout << "\nEnter new Width: ";
-				getline(std::cin, editParam);
-				ValidData(editParam);
-				try {
-					SetWidth(stod(editParam));
-					cout << "Parameter was successfully edited." << endl;
-				}
-				catch (const Exceptions& ex) {
-					cout << ex.GetMessage() << endl;
-				}
-				break;
-			case 3:
-				cout << "\nEnter new Armament: ";
-				getline(std::cin, armament);
-				try {
-					SetArmament(DeleteSpaces(armament));
-					cout << "Parameter was successfully edited." << endl;
-				}
-				catch (const Exceptions& ex) {
-					cout << ex.GetMessage() << endl;
-				}
-				break;
-			case 4:
-				cout << "\nEnter new Time under water: ";
-				getline(std::cin, editParam);
-				try {
-					ValidIntData(editParam);
-					SetTimeUnderWater(stoi(editParam));
-					cout << "Parameter was successfully edited." << endl;
-				}
-				catch (const Exceptions& ex) {
-					cout << ex.GetMessage() << endl;
-				}
-				break;
-			case 5:
-				cout << "Enter new Speed: ";
-				getline(std::cin, editParam);
-				try {
-					ValidData(editParam);
-					SetSpeed(stod(editParam));
-					cout << "Parameter was successfully edited." << endl;
-				}
-				catch (const Exceptions& ex) {
-					cout << ex.GetMessage() << endl;
-				}
-				break;
-			case 6:
-				cout << "Enter new Amount of crew: ";
-				getline(std::cin, editParam);
-				try {
-					ValidIntData(editParam);
-					SetAmountCrew(stoi(editParam));
-					cout << "Parameter was successfully edited." << endl;
-				}
-				catch (const Exceptions& ex) {
-					cout << ex.GetMessage() << endl;
-				}
-				break;
-			case 7:
-				this->PrintInfo();
-				break;
-			default:
-				cout << "Invalid input! Please, enter 1/2/3/4/5/6/7/8 (0 - exit) number.";
-				break;
+		case 1:
+			std::cout << "\nEnter new Length: ";
+			getline(std::cin, editParam);
+			ValidData(editParam);
+			try {
+				SetLength(stod(editParam));
+				cout << "Parameter was successfully edited." << endl;
 			}
-			//std::cin.ignore();
-			std::cin.get();
-		} while (stoi(choice) != 0);
-	}
-	catch (const Exceptions& ex) { cout << ex.GetMessage() << endl; }
+			catch (const Exceptions& ex) {
+				cout << ex.GetMessage() << endl;
+			}
+			break;
+		case 2:
+			std::cout << "\nEnter new Width: ";
+			getline(std::cin, editParam);
+			ValidData(editParam);
+			try {
+				SetWidth(stod(editParam));
+				cout << "Parameter was successfully edited." << endl;
+			}
+			catch (const Exceptions& ex) {
+				cout << ex.GetMessage() << endl;
+			}
+			break;
+		case 3:
+			cout << "\nEnter new Armament: ";
+			getline(std::cin, armament);
+			try {
+				SetArmament(DeleteSpaces(armament));
+				cout << "Parameter was successfully edited." << endl;
+			}
+			catch (const Exceptions& ex) {
+				cout << ex.GetMessage() << endl;
+			}
+			break;
+		case 4:
+			cout << "\nEnter new Time under water: ";
+			getline(std::cin, editParam);
+			try {
+				ValidIntData(editParam);
+				SetTimeUnderWater(stoi(editParam));
+				cout << "Parameter was successfully edited." << endl;
+			}
+			catch (const Exceptions& ex) {
+				cout << ex.GetMessage() << endl;
+			}
+			break;
+		case 5:
+			cout << "Enter new Speed: ";
+			getline(std::cin, editParam);
+			try {
+				ValidData(editParam);
+				SetSpeed(stod(editParam));
+				cout << "Parameter was successfully edited." << endl;
+			}
+			catch (const Exceptions& ex) {
+				cout << ex.GetMessage() << endl;
+			}
+			break;
+		case 6:
+			cout << "Enter new Amount of crew: ";
+			getline(std::cin, editParam);
+			try {
+				ValidIntData(editParam);
+				SetAmountCrew(stoi(editParam));
+				cout << "Parameter was successfully edited." << endl;
+			}
+			catch (const Exceptions& ex) {
+				cout << ex.GetMessage() << endl;
+			}
+			break;
+		case 7:
+			this->PrintInfo();
+			break;
+		case 0: break;
+		default:
+			cout << "Invalid input! Please, enter 1/2/3/4/5/6/7 (0 - exit) number.";
+			break;
+		}
+		std::cin.get();
+		
+		}
+		catch (const Exceptions& ex) { cout << ex.GetMessage() << endl; }
+		std::cin.ignore();
+	} while (choice != "0");
+}
+
+std::ofstream& Submarine::Save(std::ofstream& out) const
+{
+	out << "Submarine" << "," << this->GetID() << "," << this->GetLength() << "," << this->GetWidth() << "," << this->GetArmament() << "," <<
+		this->GetTimeUnderWater() << "," << this->GetSpeed() << "," << this->GetAmountCrew();
+	return out;
 }
