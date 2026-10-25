@@ -19,6 +19,8 @@ public:
 	void Restoring();
 	bool IsUnique(unsigned int id);
 	Keeper();
+	Keeper(Base ** massive, int size): massive{massive}, size(size){}
+	Keeper(const Keeper& massive);
 	~Keeper();
 
 	void SetMassive() { this->massive = nullptr; }

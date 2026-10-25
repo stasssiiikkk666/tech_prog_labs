@@ -26,7 +26,6 @@ void Keeper::AddObject(Base* obj)
 	massive[size] = obj;
 	size++;
 	SetSize(size);
-	//cout << "New object was created sucessfully.";
 }
 
 void Keeper::Save() const{
@@ -181,6 +180,15 @@ Keeper::Keeper()
 	SetSize(0);
 	SetMassive();
 	cout << "Keeper Default Constructor was called." << endl;
+}
+
+Keeper::Keeper(const Keeper& massive)
+{
+	int size = massive.GetSize();
+	this->massive = new Base* [size];
+	for (int i = 0; i < size; i++) {
+		this->massive[i] = massive.massive[i]->CopyObject();
+	}
 }
 
 Keeper::~Keeper()
