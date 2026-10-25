@@ -277,6 +277,11 @@ std::ofstream& Sailboat::Save(std::ofstream& out) const
 	return out;
 }
 
+Base* Sailboat::CopyObject() const
+{
+	return new Sailboat(*this);
+}
+
 
 
 
