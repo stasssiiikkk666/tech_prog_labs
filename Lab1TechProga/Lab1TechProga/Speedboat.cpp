@@ -239,4 +239,9 @@ std::ofstream& Speedboat::Save(std::ofstream& out) const
 	return out;
 }
 
+Base* Speedboat::CopyObject() const
+{
+	return new Speedboat(*this);
+}
+
 

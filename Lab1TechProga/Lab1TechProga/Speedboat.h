@@ -34,4 +34,5 @@ public:
 	void EditInfo() override;
 
 	std::ofstream& Save(std::ofstream& out) const override;
+	Base* CopyObject() const override;
 };
