@@ -35,6 +35,6 @@ public:
 
 	std::string& DeleteSpaces(std::string& data);
 	virtual std::ofstream& Save(std::ofstream& out) const = 0;
-	//virtual std::ifstream& Restore(std::ifstream& in) const = 0;
+	virtual Base* CopyObject() const = 0;
 };
 
