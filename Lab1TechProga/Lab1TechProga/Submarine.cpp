@@ -279,3 +279,8 @@ std::ofstream& Submarine::Save(std::ofstream& out) const
 		this->GetTimeUnderWater() << "," << this->GetSpeed() << "," << this->GetAmountCrew();
 	return out;
 }
+
+Base* Submarine::CopyObject() const
+{
+	return new Submarine(*this);
+}
