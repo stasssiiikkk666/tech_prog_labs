@@ -135,10 +135,13 @@ void Submarine::RestoreObject(std::istringstream& ss)
 {
 	std::string element;
 	getline(ss, element, ',');
+	ValidData(element);
 	this->SetID(element);
 	getline(ss, element, ',');
+	ValidData(element);
 	this->SetLength(stod(element));
 	getline(ss, element, ',');
+	ValidData(element);
 	this->SetWidth(stod(element));
 	getline(ss, element, ',');
 	this->SetArmament(element);
