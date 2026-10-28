@@ -115,6 +115,7 @@ void Speedboat::RestoreObject(std::istringstream& ss)
 {
 	std::string element;
 	getline(ss, element, ',');
+	ValidData(element);
 	this->SetID(element);
 	getline(ss, element, ',');
 	this->SetPurpose(element);
