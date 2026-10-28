@@ -193,14 +193,16 @@ Keeper::Keeper(const Keeper& massive)
 
 Keeper::~Keeper()
 {
-	for (int i = 0; i < GetSize(); i++) {
-		delete massive[i];
-		massive[i] = nullptr;
+	if (GetSize() > 0) {
+		for (int i = 0; i < GetSize(); i++) {
+			delete massive[i];
+			massive[i] = nullptr;
+		}
+		delete[] massive;
+		this->massive = nullptr;
+		size = 0;
+		cout << "Keeper Destructor was called." << endl;
 	}
-	delete[] massive;
-	this->massive = nullptr;
-	size = 0;
-	cout << "Keeper Destructor was called." << endl;
 }
 
 Base* Keeper::SearchObject(unsigned int id)
